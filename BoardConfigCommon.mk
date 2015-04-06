@@ -123,7 +123,8 @@ BOARD_SEPOLICY_UNION += \
 ifneq ($(wildcard bootable/recovery-twrp/Android.mk),)
 	# TWRP
 	RECOVERY_VARIANT := twrp
-	DEVICE_RESOLUTION := 1200x1920
+	TW_THEME := portrait_hdpi
+	TW_THEME_LANDSCAPE := landscape_hdpi
 	BOARD_HAS_FLIPPED_SCREEN := true
 	RECOVERY_GRAPHICS_USE_LINELENGTH := true
 	BOARD_HAS_NO_REAL_SDCARD := true
@@ -134,7 +135,6 @@ ifneq ($(wildcard bootable/recovery-twrp/Android.mk),)
 	# MultiROM
 	MR_INPUT_TYPE := type_b
 	MR_INIT_DEVICES := device/nvidia/shieldtablet/multirom/mr_init_devices.c
-	MR_RD_ADDR := 0x82500000
 	MR_DPI := xhdpi
 	MR_DPI_FONT := 323
 	MR_FSTAB := device/nvidia/shieldtablet/recovery/root/etc/twrp.fstab
