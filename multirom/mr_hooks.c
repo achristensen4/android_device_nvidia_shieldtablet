@@ -41,13 +41,13 @@ static void ts_thread() {
 	execve(argv[0], &argv[0], envp);
 }
 
+void mrom_hook_before_fb_close() {
+	kill_pid(PID_TOUCH);
+}
+
 int mrom_hook_after_android_mounts(const char *busybox_path, const char *base_path, int type) {
 	mrom_hook_before_fb_close();
 	return 0;
-}
-
-void mrom_hook_before_fb_close() {
-	kill_pid(PID_TOUCH);
 }
 
 void tramp_hook_before_device_init() {
@@ -58,4 +58,16 @@ void tramp_hook_before_device_init() {
 		ts_thread();
 		_exit(0);
 	}
+
+	// If host1x isn't initialized in mr_init_devices, reboot to secondary is very slow.
+	// However, host1x only tries to load firmware once and causes problems on the internal
+	// rom if it is missing. Copy the firmware from the internal rom, so host1x will pick it up.
+	mkdir("/system", 0755);
+	mkdir("/etc", 0755);
+	mkdir("/etc/firmware", 0755);
+	mount("/dev/block/platform/sdhci-tegra.3/by-name/APP", "/system", "ext4", MS_RDONLY, NULL);
+	wait_for_file("/system/etc", 10);
+	system("cp /system/etc/firmware/nvavp_vid_ucode*.bin /etc/firmware/");
+	umount("/system");
+	unlink("/system");
 }
