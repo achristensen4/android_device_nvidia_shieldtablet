@@ -6,12 +6,9 @@
 #include <sys/mount.h>
 #include <pthread.h>
 #include <fcntl.h>
-#include <linux/watchdog.h>
 
-#define WATCHDOG_INTERVAL 1
-#define WATCHDOG_MARGIN 20
-
-#define PID_TOUCH "/touch.pid"
+#define PID_TOUCH    "/touch.pid"
+#define PID_WATCHDOG "/watchdog.pid"
 
 static void write_pid(const char* path, int pid) {
 	FILE* f = fopen(path, "w");
@@ -41,8 +38,23 @@ static void ts_thread() {
 	execve(argv[0], &argv[0], envp);
 }
 
+static void wd_thread() {
+	int fd = -1;
+
+	while ((fd = open("/dev/watchdog", O_RDWR)) == -1)
+		sleep(1);
+
+	ERROR("Opened /dev/watchdog, preventing auto-reboot.\n");
+
+	while (1) {
+		write(fd, "", 1);
+		sleep(5);
+	}
+}
+
 void mrom_hook_before_fb_close() {
 	kill_pid(PID_TOUCH);
+	kill_pid(PID_WATCHDOG);
 }
 
 int mrom_hook_after_android_mounts(const char *busybox_path, const char *base_path, int type) {
@@ -53,9 +65,17 @@ int mrom_hook_after_android_mounts(const char *busybox_path, const char *base_pa
 void tramp_hook_before_device_init() {
 	signal(SIGCHLD, SIG_IGN);
 
+	// Touch thread. Touchscreen driver wrapper needs run separately.
 	if (fork() == 0) {
 		write_pid(PID_TOUCH, getpid());
 		ts_thread();
+		_exit(0);
+	}
+
+	// Watchdog thread. If this isn't running, device will reset after a period of time.
+	if (fork() == 0) {
+		write_pid(PID_WATCHDOG, getpid());
+		wd_thread();
 		_exit(0);
 	}
 
