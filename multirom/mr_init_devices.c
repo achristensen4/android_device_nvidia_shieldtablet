@@ -53,11 +53,5 @@ const char *mr_init_devices[] = {
 	"/sys/devices/virtual/misc/watchdog",
 	"/sys/devices/virtual/watchdog*",
 
-	"/sys/bus/platform/drivers/host1x",
-	"/sys/devices/platform/host1x",
-	"/sys/devices/platform/host1x*",
-
-	//"/sys*", // yolo
-
 	NULL
 };

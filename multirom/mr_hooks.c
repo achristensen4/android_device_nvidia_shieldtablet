@@ -27,6 +27,7 @@ static void kill_pid(const char* path) {
 	unlink(path);
 }
 
+// Touch thread. Touchscreen driver wrapper needs run separately.
 static void ts_thread() {
 	symlink("/realdata/media/0/multirom/touchscreen", "/sbin/touchscreen");
 	wait_for_file("/dev/touch", 10);
@@ -38,6 +39,7 @@ static void ts_thread() {
 	execve(argv[0], &argv[0], envp);
 }
 
+// Watchdog thread. If this isn't running, device will reset after a period of time.
 static void wd_thread() {
 	int fd = -1;
 
@@ -52,7 +54,40 @@ static void wd_thread() {
 	}
 }
 
+// If gk20a doesn't get firmware, boot to secondary is slow and the internal fails to init graphics.
+// The symlink is needed for an automatic followup firmware load.
+// There has got to be a simpler way to do this.
+static void load_firmware() {
+	int fd_loading = -1, c = 0;
+	FILE *fd_firm = NULL, *fd_data = NULL;
+	
+	while ((fd_loading = open("/sys/class/firmware/gk20a!gpmu_ucode.bin/loading", O_WRONLY)) == -1)
+		sleep(1);
+	write(fd_loading, "1", 1);
+
+	wait_for_file("/dev/block/platform/sdhci-tegra.3/by-name/APP", 10);
+	mount("/dev/block/platform/sdhci-tegra.3/by-name/APP", "/system", "ext4", MS_RDONLY, NULL);
+	symlink("/system/etc", "/etc");
+
+	wait_for_file("/system/etc/firmware/gk20a/gpmu_ucode.bin", 10);
+	fd_firm = fopen("/system/etc/firmware/gk20a/gpmu_ucode.bin", "rb");
+	fd_data = fopen("/sys/class/firmware/gk20a!gpmu_ucode.bin/data", "wb");
+	while((c=getc(fd_firm))!=EOF)
+		fprintf(fd_data,"%c",c);
+
+	if (fclose(fd_firm)) ERROR("Error closing firmware file.\n");
+	if (fclose(fd_data)) ERROR("Error closing firmware sysfs file.\n");
+	
+	write(fd_loading, "0", 1);
+	close(fd_loading);
+	sleep(1); // wait on other firmware to load.
+	unlink("/etc");
+	umount("/system");
+	ERROR("Finished firmware load.\n");
+}
+
 void mrom_hook_before_fb_close() {
+	// Kill the extra threads
 	kill_pid(PID_TOUCH);
 	kill_pid(PID_WATCHDOG);
 }
@@ -65,29 +100,23 @@ int mrom_hook_after_android_mounts(const char *busybox_path, const char *base_pa
 void tramp_hook_before_device_init() {
 	signal(SIGCHLD, SIG_IGN);
 
-	// Touch thread. Touchscreen driver wrapper needs run separately.
+	// Spawn touch thread
 	if (fork() == 0) {
 		write_pid(PID_TOUCH, getpid());
 		ts_thread();
 		_exit(0);
 	}
 
-	// Watchdog thread. If this isn't running, device will reset after a period of time.
+	// Spawn thread to load firmware
+	if (fork() == 0) {
+		load_firmware();
+		_exit(0);
+	}
+
+	// Spawn watchdog thread
 	if (fork() == 0) {
 		write_pid(PID_WATCHDOG, getpid());
 		wd_thread();
 		_exit(0);
 	}
-
-	// If host1x isn't initialized in mr_init_devices, reboot to secondary is very slow.
-	// However, host1x only tries to load firmware once and causes problems on the internal
-	// rom if it is missing. Copy the firmware from the internal rom, so host1x will pick it up.
-	mkdir("/system", 0755);
-	mkdir("/etc", 0755);
-	mkdir("/etc/firmware", 0755);
-	mount("/dev/block/platform/sdhci-tegra.3/by-name/APP", "/system", "ext4", MS_RDONLY, NULL);
-	wait_for_file("/system/etc", 10);
-	system("cp /system/etc/firmware/nvavp_vid_ucode*.bin /etc/firmware/");
-	umount("/system");
-	unlink("/system");
 }
