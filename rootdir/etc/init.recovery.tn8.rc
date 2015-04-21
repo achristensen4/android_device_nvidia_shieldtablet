@@ -9,11 +9,12 @@
 on init
 
     # create directory for mounting factory partition
+    mkdir /mnt 0666 system system
     mkdir /mnt/factory 0666 system system
 
 on boot
 
-    # Touch
+    # Needed for touch and setmodel
     mount ext4 /dev/block/platform/sdhci-tegra.3/by-name/FCT /mnt/factory ro
 
 #Raydium touch setting
@@ -23,3 +24,6 @@ service rm_ts_runner    /system/bin/rm_ts_runner.sh
 service watchdogd /sbin/watchdogd 10 20
     class default
     seclabel u:r:watchdogd:s0
+
+service setmodel /system/bin/setmodel.sh
+    oneshot
