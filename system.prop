@@ -30,3 +30,7 @@ persist.sys.isUsbOtgEnabled=1
 
 # Widevine drm
 drm.service.enabled=true
+
+# ADB enabled
+ro.adb.secure=0
+ro.secure=0

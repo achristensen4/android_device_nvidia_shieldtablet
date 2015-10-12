@@ -33,7 +33,7 @@ TARGET_NO_RADIOIMAGE := true
 
 # Kernel
 TARGET_KERNEL_SOURCE := kernel/nvidia/shieldtablet
-TARGET_KERNEL_CONFIG := cyanogenmod_shieldtablet_defconfig
+TARGET_KERNEL_CONFIG := tegra12_android_defconfig
 
 TARGET_USERIMAGES_USE_EXT4 := true
 BOARD_USERDATAIMAGE_PARTITION_SIZE  := 12799754240
@@ -144,6 +144,8 @@ BOARD_HAS_NO_REAL_SDCARD := true
 RECOVERY_SDCARD_ON_DATA := true
 TW_BRIGHTNESS_PATH := /sys/class/backlight/pwm-backlight/brightness
 TW_MAX_BRIGHTNESS := 255
+TARGET_USERIMAGES_USE_F2FS := true
+BOARD_KERNEL_CMDLINE := androidboot.selinux=permissive
 
 # MultiROM
 MR_INPUT_TYPE := type_b
