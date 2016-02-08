@@ -124,3 +124,4 @@ MR_KEXEC_DTB := true
 MR_DEVICE_HOOKS := device/nvidia/shieldtablet/multirom/mr_hooks.c
 MR_DEVICE_HOOKS_VER := 3
 MR_DEVICE_VARIANTS := shieldtablet
+DEVICE_RESOLUTION := 1200x1920
