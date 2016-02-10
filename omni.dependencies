@@ -2,5 +2,17 @@
  {
    "repository": "android_hardware_nvidia_power",
    "target_path": "hardware/nvidia/power"
+ },
+ {
+   "remote":"github",
+   "repository": "CM-Shield/android_kernel_nvidia_shieldtablet",
+   "target_path": "kernel/nvidia/shieldtablet",
+   "revision":"cm-13.0"
+ },
+ {
+   "remote":"github",
+   "repository": "Bogdacutu/RM-Wrapper",
+   "target_path": "system/extras/rm-wrapper",
+   "revision":"master"
  }
 ]
