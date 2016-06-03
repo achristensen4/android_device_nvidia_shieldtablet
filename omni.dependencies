@@ -1,0 +1,26 @@
+[
+ {
+   "remote":"github",
+   "repository": "CM-Shield/android_hardware_nvidia_power",
+   "target_path": "hardware/nvidia/power",
+   "revision":"cm-13.0"
+ },
+ {
+   "remote":"github",
+   "repository": "CM-Shield/android_device_nvidia_shield-common",
+   "target_path": "device/nvidia/shield-common",
+   "revision":"cm-13.0"
+ },
+ {
+   "remote":"github",
+   "repository": "BitOBSessiOn/android_kernel_nvidia_shieldtablet",
+   "target_path": "kernel/nvidia/shield",
+   "revision":"bito-k5"
+ },
+ {
+   "remote":"github",
+   "repository": "CM-Shield/RM-Wrapper",
+   "target_path": "system/extras/rm-wrapper",
+   "revision":"master"
+ }
+]
