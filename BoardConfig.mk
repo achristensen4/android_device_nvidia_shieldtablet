@@ -31,10 +31,13 @@ TARGET_NO_RADIOIMAGE := true
 # Kernel
 TARGET_KERNEL_SOURCE := kernel/nvidia/shieldtablet
 TARGET_KERNEL_CONFIG := omni_shieldtablet_defconfig
+#TARGET_KERNEL_CONFIG := cyanogenmod_shieldtablet_defconfig
 BOARD_KERNEL_IMAGE_NAME := zImage-dtb
 BOARD_KERNEL_CMDLINE := androidboot.hardware=tn8 androidboot.selinux=permissive
 
 TARGET_USERIMAGES_USE_EXT4 := true
+TARGET_USERIMAGES_USE_F2FS := true
+
 BOARD_BOOTIMAGE_PARTITION_SIZE := 16777216
 BOARD_CACHEIMAGE_PARTITION_SIZE := 1073741824
 BOARD_RECOVERYIMAGE_PARTITION_SIZE := 16777216
@@ -106,3 +109,18 @@ TW_BRIGHTNESS_PATH := /sys/class/backlight/pwm-backlight/brightness
 TW_MAX_BRIGHTNESS := 255
 TW_INCLUDE_CRYPTO := true
 TARGET_RECOVERY_DEVICE_MODULES := rm-wrapper
+
+# MultiROM
+TARGET_RECOVERY_IS_MULTIROM := true
+MR_INPUT_TYPE := type_b
+MR_INIT_DEVICES := device/nvidia/shieldtablet/multirom/mr_init_devices.c
+MR_DPI := xhdpi
+MR_DPI_FONT := 323
+MR_FSTAB := device/nvidia/shieldtablet/multirom/twrp.fstab
+MR_KEXEC_MEM_MIN := 0x85000000
+MR_DEVICE_HOOKS := device/nvidia/shieldtablet/multirom/mr_hooks.c
+MR_DEVICE_HOOKS_VER := 5
+MR_DEVICE_VARIANTS := shieldtablet
+# Added...
+MR_PIXEL_FORMAT := "RGBA_8888"
+
