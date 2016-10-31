@@ -118,3 +118,4 @@ MR_KEXEC_MEM_MIN := 0x85000000
 MR_DEVICE_HOOKS := device/nvidia/shieldtablet/multirom/mr_hooks.c
 MR_DEVICE_HOOKS_VER := 5
 MR_DEVICE_VARIANTS := shieldtablet
+MR_NO_KEXEC := 2
