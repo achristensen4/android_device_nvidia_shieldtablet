@@ -29,7 +29,7 @@ TARGET_NO_BOOTLOADER := true
 TARGET_NO_RADIOIMAGE := true
 
 # Kernel
-TARGET_KERNEL_SOURCE := kernel/nvidia/shieldtablet
+TARGET_KERNEL_SOURCE := kernel/nvidia/shield
 TARGET_KERNEL_CONFIG := cyanogenmod_shieldtablet_defconfig
 BOARD_KERNEL_IMAGE_NAME := zImage-dtb
 BOARD_KERNEL_CMDLINE := androidboot.hardware=tn8 androidboot.selinux=permissive
@@ -97,6 +97,7 @@ TARGET_INIT_VENDOR_LIB := libinit_tn8
 TARGET_LIBINIT_DEFINES_FILE := device/nvidia/shieldtablet/init/init_tn8.cpp
 
 # TWRP
+RECOVERY_VARIANT := twrp
 TW_THEME := portrait_hdpi
 TW_THEME_LANDSCAPE := landscape_hdpi
 BOARD_HAS_FLIPPED_SCREEN := true
@@ -106,6 +107,7 @@ RECOVERY_SDCARD_ON_DATA := true
 TW_BRIGHTNESS_PATH := /sys/class/backlight/pwm-backlight/brightness
 TW_MAX_BRIGHTNESS := 255
 TW_INCLUDE_CRYPTO := true
+TARGET_RECOVERY_DEVICE_MODULES := rm-wrapper
 BOARD_USES_DOUBLEFLIP_FB := true
 
 # MultiROM
@@ -120,3 +122,8 @@ MR_DEVICE_HOOKS := device/nvidia/shieldtablet/multirom/mr_hooks.c
 MR_DEVICE_HOOKS_VER := 5
 MR_DEVICE_VARIANTS := shieldtablet
 MR_NO_KEXEC := 2
+# HW keys
+#MR_PAD_CONFIRM := true
+#MR_PAD_DOWN := true
+#MR_PAD_UP := true
+
