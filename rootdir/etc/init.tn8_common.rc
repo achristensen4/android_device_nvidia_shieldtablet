@@ -35,7 +35,7 @@ on boot
     setprop nvwfd.hdvideoplayback 0
 
 on init
-    setprop ro.feature.stylus 1
+    setprop ro.feature.stylus 0
     setprop persist.tegra.cursor.enable 1
     setprop sf.async.cursor.enable 1
     setprop input.tch_blk.enabled 1
@@ -57,7 +57,7 @@ on init
     setprop input.tch_blk.edgeremap_right 15
     setprop input.tch_blk.edgeremap_bottom 5
     setprop input.nonwhitelistedmode 3
-    setprop keyguard.no_require_sim true
+    setprop keyguard.no_require_sim false
     setprop persist.tegra.didim.enable 0
     write /proc/sys/vm/page-cluster 0
 
@@ -66,7 +66,7 @@ service charger /charger
 
 on charger
     setprop persist.sys.usb.config mtp
-    mount ext4 /dev/block/platform/sdhci-tegra.3/by-name/APP /system wait ro
+    mount ext4 /dev/block/platform/sdhci-tegra.3/by-name/APP /system wait rw
     write /sys/devices/system/cpu/cpuquiet/tegra_cpuquiet/enable 1
     write /sys/devices/system/cpu/cpuquiet/current_governor runnable
-    write /sys/devices/system/cpu/cpuquiet/tegra_cpuquiet/no_lp -1
+    write /sys/devices/system/cpu/cpuquiet/tegra_cpuquiet/no_lp 0
