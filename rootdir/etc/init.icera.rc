@@ -57,33 +57,28 @@ on post-fs-data
 service icera-crashlogs /vendor/bin/icera-crashlogs
     user root
     group root
-    disabled
     oneshot
 
 # AT port forwarding service
 service at-port-forward /vendor/bin/at-port-forward
     user radio
     group radio system
-    disabled
 
 # Modem logging port forwarding service
 service log-port-forward /vendor/bin/log-port-forward
     user radio
     group radio system
-    disabled
 
 # Packet RNDIS forward activation
 service tm-rndis-start /system/bin/nwifup
     user root
     group root
-    disabled
     oneshot
 
 # Packet RNDIS forward deactivation
 service tm-rndis-stop /system/bin/nwifdown
     user root
     group root
-    disabled
     oneshot
 
 # Mock modem service
@@ -106,7 +101,6 @@ service ril-daemon-test /system/bin/rild
     socket rild-debug stream 660 radio system
     user root
     group radio cache inet misc audio sdcard_rw sdcard_r
-    disabled
 
 on property:gsm.modem.icera.testmode.rndis=0
     start tm-rndis-stop
@@ -134,7 +128,6 @@ on property:gsm.modem.riltest.enabled=1
 service icera-feedback /vendor/bin/icera-feedback
     user shell
     group shell log
-    disabled
     oneshot
 
 on property:gsm.modem.feedback=1
@@ -145,14 +138,12 @@ service icera-switcher /vendor/bin/icera-switcherd
     class main
     user radio
     group log usb
-    disabled
 
 # Icera firmware update
 service icera-loader /vendor/bin/icera-loader /dev/ttyACM0
     class main
     user root
     group radio
-    disabled
     oneshot
 
 # Start AGPS daemon
@@ -161,7 +152,6 @@ service agps-daemon /vendor/bin/agpsd
     user radio
     socket at_pal seqpacket 0666 radio system
     group system
-    disabled
 
 on cm.icera.enabled=1
     start icera-switcher
